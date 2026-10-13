@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import '../providers/account_provider.dart';
 import '../widgets/account_detail.dart';
+import 'tam_calculator_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -128,6 +129,15 @@ class HomePage extends StatelessWidget {
                             valueColor: forest),
                       ],
                     ),
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (_) => const TamCalculatorScreen()),
+                    ),
+                    icon: const Icon(Icons.calculate_outlined),
+                    label: const Text('Calcular tamaño de mercado'),
                   ),
                   const SizedBox(height: 20)
                 ],
