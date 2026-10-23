@@ -64,6 +64,17 @@ class ApiService {
     return Account.fromJson(data['user'] as Map<String, dynamic>);
   }
 
+  Future<Account> saveProjectStage(String projectStage) async {
+    final data = await _request(
+      'PUT',
+      '/auth/me/project-stage',
+      body: {'projectStage': projectStage},
+    );
+    return Account.fromJson(data['user'] as Map<String, dynamic>);
+  }
+
+  
+
   Future<Account?> restoreSession() async {
     final token = await _storage.read(key: _tokenKey);
     if (token == null || token.isEmpty) return null;
@@ -108,6 +119,11 @@ class ApiService {
         case 'GET':
           response = await _client
               .get(uri, headers: headers)
+              .timeout(const Duration(seconds: 15));
+          break;
+        case 'PUT':
+          response = await _client
+              .put(uri, headers: headers, body: jsonEncode(body))
               .timeout(const Duration(seconds: 15));
           break;
         default:

@@ -5,6 +5,7 @@ import 'providers/account_provider.dart';
 import 'screens/auth_page.dart';
 import 'screens/home_page.dart';
 import 'screens/loading_screen.dart';
+import 'screens/welcome_screen.dart';
 
 const ink = Color(0xFF172D2A);
 const forest = Color(0xFF1D6254);
@@ -41,12 +42,18 @@ class GreenHatApp extends StatelessWidget {
         fontFamily: 'Roboto',
         textTheme: const TextTheme(
           headlineLarge: TextStyle(
-            color: paper, fontSize: 38, height: 1.12,
-            fontWeight: FontWeight.w800, letterSpacing: -1.2,
+            color: paper,
+            fontSize: 38,
+            height: 1.12,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -1.2,
           ),
           headlineMedium: TextStyle(
-            color: ink, fontSize: 28, height: 1.16,
-            fontWeight: FontWeight.w800, letterSpacing: -0.7,
+            color: ink,
+            fontSize: 28,
+            height: 1.16,
+            fontWeight: FontWeight.w800,
+            letterSpacing: -0.7,
           ),
           bodyMedium: TextStyle(color: muted, height: 1.5, fontSize: 14),
         ),
@@ -54,7 +61,8 @@ class GreenHatApp extends StatelessWidget {
           filled: true,
           fillColor: const Color(0xFFF8FAF8),
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 15, vertical: 17,
+            horizontal: 15,
+            vertical: 17,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14),
@@ -87,7 +95,8 @@ class GreenHatApp extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
             ),
-            textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
+            textStyle:
+                const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
           ),
         ),
       ),
@@ -98,6 +107,12 @@ class GreenHatApp extends StatelessWidget {
           }
           if (accountProvider.account == null) {
             return const AuthPage();
+          }
+          if (accountProvider.needsWelcome) {
+            return WelcomeScreen(
+              userName: accountProvider.account!.name,
+              onContinue: accountProvider.completeWelcome,
+            );
           }
           return const HomePage();
         },

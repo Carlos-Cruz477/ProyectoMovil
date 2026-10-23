@@ -2,6 +2,7 @@ const { validationError } = require('./errors');
 
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PROJECT_STAGES = new Set(['idea', 'prototype', 'traction']);
 
 function requireObject(body) {
   if (body === null || typeof body !== 'object' || Array.isArray(body)) {
@@ -53,4 +54,13 @@ function validateLogin(body) {
   return { email, password };
 }
 
-module.exports = { validateSignup, validateLogin };
+function validateProjectStage(body) {
+  requireObject(body);
+  const projectStage = requireString(body, 'projectStage', 'Project stage').trim();
+  if (!PROJECT_STAGES.has(projectStage)) {
+    throw validationError('Project stage must be one of: idea, prototype, traction');
+  }
+  return { projectStage };
+}
+
+module.exports = { validateSignup, validateLogin, validateProjectStage };

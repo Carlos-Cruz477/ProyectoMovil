@@ -4,6 +4,7 @@ class Account {
     required this.email,
     required this.name,
     required this.businessSector,
+    required this.projectStage,
     required this.createdAt,
   });
 
@@ -11,6 +12,7 @@ class Account {
   final String email;
   final String name;
   final String businessSector;
+  final String? projectStage;
   final DateTime createdAt;
 
   factory Account.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class Account {
       email: json['email'] as String,
       name: json['name'] as String,
       businessSector: json['businessSector'] as String,
+      projectStage: json['projectStage'] as String?,
       createdAt: DateTime.tryParse(json['createdAt'] as String? ?? '') ??
           DateTime.now(),
     );

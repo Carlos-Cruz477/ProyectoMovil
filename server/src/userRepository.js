@@ -6,17 +6,21 @@ function toUser(row) {
     name: row.name,
     email: row.email,
     businessSector: row.business_sector,
+    projectStage: row.project_stage ?? null,
     createdAt: row.created_at,
   };
 }
 
 function createUserRepository(db) {
   const insertStmt = db.prepare(`
-    INSERT INTO users (id, email, name, password_hash, business_sector, created_at)
-    VALUES (@id, @email, @name, @passwordHash, @businessSector, @createdAt)
+    INSERT INTO users (id, email, name, password_hash, business_sector, project_stage, created_at)
+    VALUES (@id, @email, @name, @passwordHash, @businessSector, NULL, @createdAt)
   `);
   const byEmailStmt = db.prepare('SELECT * FROM users WHERE email = ?');
   const byIdStmt = db.prepare('SELECT * FROM users WHERE id = ?');
+  const updateProjectStageStmt = db.prepare(
+    'UPDATE users SET project_stage = ? WHERE id = ?',
+  );
 
   return {
     create({ email, name, passwordHash, businessSector }) {
@@ -41,6 +45,12 @@ function createUserRepository(db) {
     findById(id) {
       const row = byIdStmt.get(id);
       return row ? toUser(row) : null;
+    },
+
+    updateProjectStage(id, projectStage) {
+      const result = updateProjectStageStmt.run(projectStage, id);
+      if (result.changes === 0) return null;
+      return toUser(byIdStmt.get(id));
     },
   };
 }

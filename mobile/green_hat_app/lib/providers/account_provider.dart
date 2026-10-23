@@ -9,17 +9,21 @@ class AccountProvider extends ChangeNotifier {
   Account? _account;
   bool _isCheckingSession = true;
   bool _isBusy = false;
+  bool _needsWelcome = false;
 
   Account? get account => _account;
   bool get isCheckingSession => _isCheckingSession;
   bool get isBusy => _isBusy;
   bool get isAuthenticated => _account != null;
+  bool get needsWelcome => _needsWelcome;
 
   Future<void> restoreSession() async {
     try {
       _account = await _api.restoreSession();
+      _needsWelcome = _account != null && _account!.projectStage == null;
     } catch (_) {
       _account = null;
+      _needsWelcome = false;
     } finally {
       _isCheckingSession = false;
       notifyListeners();
@@ -33,6 +37,7 @@ class AccountProvider extends ChangeNotifier {
     _setBusy(true);
     try {
       _account = await _api.logIn(email: email, password: password);
+      _needsWelcome = _account!.projectStage == null;
       notifyListeners();
     } finally {
       _setBusy(false);
@@ -53,6 +58,18 @@ class AccountProvider extends ChangeNotifier {
         password: password,
         businessSector: businessSector,
       );
+      _needsWelcome = _account!.projectStage == null;
+      notifyListeners();
+    } finally {
+      _setBusy(false);
+    }
+  }
+
+  Future<void> completeWelcome(String projectStage) async {
+    _setBusy(true);
+    try {
+      _account = await _api.saveProjectStage(projectStage);
+      _needsWelcome = false;
       notifyListeners();
     } finally {
       _setBusy(false);
@@ -64,6 +81,7 @@ class AccountProvider extends ChangeNotifier {
     try {
       await _api.logOut();
       _account = null;
+      _needsWelcome = false;
       notifyListeners();
     } finally {
       _setBusy(false);

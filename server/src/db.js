@@ -7,6 +7,7 @@ const SCHEMA = `
     name            TEXT NOT NULL,
     password_hash   TEXT NOT NULL,
     business_sector TEXT NOT NULL,
+    project_stage   TEXT,
     created_at      TEXT NOT NULL
   );
 `;
@@ -16,6 +17,10 @@ function createDatabase(filename = ':memory:') {
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA);
+  const columns = db.prepare('PRAGMA table_info(users)').all();
+  if (!columns.some((column) => column.name === 'project_stage')) {
+    db.exec('ALTER TABLE users ADD COLUMN project_stage TEXT');
+  }
   return db;
 }
 

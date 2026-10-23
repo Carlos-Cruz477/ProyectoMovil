@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { rateLimit } = require('express-rate-limit');
-const { validateSignup, validateLogin } = require('../validation');
+const { validateSignup, validateLogin, validateProjectStage } = require('../validation');
 const { conflict, invalidCredentials } = require('../errors');
 const { authenticate } = require('../middleware/authenticate');
 
@@ -53,6 +53,12 @@ function createAuthRouter({ users, tokens, bcryptRounds, loginRateLimit }) {
 
   router.get('/me', authenticate({ tokens, users }), (req, res) => {
     res.status(200).json({ user: req.user });
+  });
+
+  router.put('/me/project-stage', authenticate({ tokens, users }), (req, res) => {
+    const { projectStage } = validateProjectStage(req.body);
+    const user = users.updateProjectStage(req.user.id, projectStage);
+    res.status(200).json({ user });
   });
 
   return router;

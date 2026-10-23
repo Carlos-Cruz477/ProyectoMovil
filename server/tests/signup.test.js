@@ -25,6 +25,7 @@ describe('POST /auth/signup', () => {
       name: 'Jane Doe',
       email: 'user@example.com',
       businessSector: 'technology',
+      projectStage: null,
       createdAt: expect.any(String),
     });
     expect(new Date(res.body.user.createdAt).toISOString()).toBe(res.body.user.createdAt);
