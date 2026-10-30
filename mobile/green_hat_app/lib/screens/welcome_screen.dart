@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/account_provider.dart';
+import '../services/api_service.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({
@@ -37,28 +41,35 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   ];
 
   String? _selectedStage;
-  bool _isSubmitting = false;
 
   Future<void> _continue() async {
     final stage = _selectedStage;
-    if (stage == null || _isSubmitting) return;
+    if (stage == null || context.read<AccountProvider>().isBusy) return;
 
-    setState(() => _isSubmitting = true);
     try {
       await widget.onContinue(stage);
-    } catch (error) {
+    } on ApiException catch (error) {
+      if (mounted) _message(error.message);
+    } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error.toString())),
-        );
+        _message('Pasó algo inesperado, por favor vuelva a intentar.');
       }
-    } finally {
-      if (mounted) setState(() => _isSubmitting = false);
     }
+  }
+
+  void _message(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF8F3636),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final busy = context.watch<AccountProvider>().isBusy;
     final colors = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
@@ -116,13 +127,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   _buildQuickRoute(colors, textTheme),
                   const SizedBox(height: 24),
                   FilledButton(
-                    onPressed: _selectedStage == null || _isSubmitting
-                        ? null
-                        : _continue,
+                    onPressed:
+                        _selectedStage == null || busy ? null : _continue,
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (_isSubmitting) ...[
+                        if (busy) ...[
                           const SizedBox(
                             width: 18,
                             height: 18,
@@ -133,10 +143,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                           ),
                           const SizedBox(width: 8),
                         ],
-                        Text(_isSubmitting
-                            ? 'Guardando etapa...'
-                            : 'Comenzar a validar'),
-                        if (!_isSubmitting) ...[
+                        Text(
+                            busy ? 'Guardando etapa...' : 'Comenzar a validar'),
+                        if (!busy) ...[
                           const SizedBox(width: 8),
                           const Icon(Icons.arrow_forward, size: 18),
                         ],
@@ -213,9 +222,6 @@ Widget _buildCelebration(
                 Icons.check_circle_outline_rounded,
                 color: colors.primary,
                 size: 29,
-
-
-                
               ),
             ),
           ],
@@ -295,8 +301,6 @@ class _ProjectStage {
     required this.title,
     required this.description,
     required this.icon,
-
-
   });
 
   final String id;
@@ -376,9 +380,6 @@ class _QuickRouteItem extends StatelessWidget {
     this.icon,
     this.iconColor,
   });
-
-
-
 
   final String title;
   final String detail;
