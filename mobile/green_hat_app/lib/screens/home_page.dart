@@ -5,6 +5,7 @@ import '../main.dart';
 import '../providers/account_provider.dart';
 import '../widgets/account_detail.dart';
 import 'tam_calculator_screen.dart';
+import 'mentors_screen.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -138,6 +139,13 @@ class HomePage extends StatelessWidget {
                     ),
                     icon: const Icon(Icons.calculate_outlined),
                     label: const Text('Calcular tamaño de mercado'),
+                  ),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () => Navigator.of(context).push(MaterialPageRoute<void>(
+                      builder: (_) => const MentorsScreen())),
+                    icon: const Icon(Icons.groups_outlined),
+                    label: const Text('Conectar con mentores e inversores'),
                   ),
                   const SizedBox(height: 20)
                 ],

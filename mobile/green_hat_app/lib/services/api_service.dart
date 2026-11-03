@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/account.dart';
+import '../models/mentor.dart';
 
 class ApiException implements Exception {
   const ApiException(this.message, {this.statusCode});
@@ -30,6 +31,26 @@ class ApiService {
   final http.Client _client;
   final FlutterSecureStorage _storage;
   static const _tokenKey = 'green-hat_access_token';
+
+  Future<List<Mentor>> getMentors({String query = '', String category = 'Todos'}) async {
+    final params = Uri(queryParameters: {'q': query, 'category': category}).query;
+    final data = await _request('GET', '/mentors?$params');
+    return (data['mentors'] as List)
+        .map((item) => Mentor.fromJson(item as Map<String, dynamic>)).toList();
+  }
+
+  Future<Mentor> getMentor(String id) async {
+    final data = await _request('GET', '/mentors/${Uri.encodeComponent(id)}');
+    return Mentor.fromJson(data['mentor'] as Map<String, dynamic>);
+  }
+
+  Future<void> requestMentor({required String mentorId, required String type,
+    required String message, required bool shareReport, Map<String, dynamic>? report}) async {
+    await _request('POST', '/mentors/${Uri.encodeComponent(mentorId)}/requests', body: {
+      'type': type, 'message': message, 'shareReport': shareReport,
+      if (shareReport && report != null) 'report': report,
+    });
+  }
 
   Future<Account> signUp({
     required String name,

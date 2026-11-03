@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../main.dart';
+import 'mentors_screen.dart';
 
 class TamReportScreen extends StatefulWidget {
   const TamReportScreen({
@@ -80,18 +81,20 @@ class _TamReportScreenState extends State<TamReportScreen> {
                           color: ink,
                           fontWeight: FontWeight.w700,
                           fontSize: 14)),
-                  subtitle: const Text('Únicamente con tu consentimiento',
+                  subtitle: const Text('Valores de ejemplo; autoriza el envío al elegir un mentor',
                       style: TextStyle(color: muted, fontSize: 12)),
                 ),
               ),
               const SizedBox(height: 22),
               FilledButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                            Text('Esta función estará disponible pronto.')),
-                  );
+                  Navigator.of(context).push(MaterialPageRoute<void>(
+                    builder: (_) => MentorsScreen(report: _shareWithMentors ? {
+                      'sector': widget.sector, 'market': widget.market,
+                      'tam': 1400000000, 'sam': 180000000, 'som': 16500000,
+                      'isEstimateDemo': true,
+                    } : null),
+                  ));
                 },
                 child: const Text('Conectar con mentores o inversionistas'),
               ),

@@ -1,4 +1,5 @@
 const express = require('express');
+const { createMentorsRouter } = require('./routes/mentors');
 const { createUserRepository } = require('./userRepository');
 const { createTokenService } = require('./tokens');
 const { createAuthRouter } = require('./routes/auth');
@@ -26,6 +27,8 @@ function createApp({ db, config, logger = console }) {
       loginRateLimit: config.loginRateLimit,
     }),
   );
+
+  app.use('/api/v1/mentors', createMentorsRouter({ db, tokens, users }));
 
   app.use(notFoundHandler);
   app.use(errorHandler(logger));
