@@ -5,8 +5,9 @@ import 'mentor_assets.dart';
 ThemeData mentorTheme(BuildContext context) => Theme.of(context);
 
 class MentorHeader extends StatelessWidget implements PreferredSizeWidget {
-  const MentorHeader({this.showBack = false, super.key});
+  const MentorHeader({this.showBack = false, this.onProfileTap, super.key});
   final bool showBack;
+  final VoidCallback? onProfileTap;
   @override
   Size get preferredSize => const Size.fromHeight(64);
   @override
@@ -47,8 +48,9 @@ class MentorHeader extends StatelessWidget implements PreferredSizeWidget {
                     icon: Icon(Icons.person_outline,
                         size: 19,
                         color: Theme.of(context).colorScheme.onPrimary),
-                    onPressed: () => Navigator.of(context)
-                        .popUntil((route) => route.isFirst)),
+                    onPressed: onProfileTap ??
+                        () => Navigator.of(context)
+                            .popUntil((route) => route.isFirst)),
               ))
         ],
       );

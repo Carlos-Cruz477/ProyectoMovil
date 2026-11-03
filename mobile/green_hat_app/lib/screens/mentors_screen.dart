@@ -4,6 +4,7 @@ import '../models/mentor.dart';
 import '../services/api_service.dart';
 import '../widgets/mentor_ui.dart';
 import 'mentor_detail_screen.dart';
+import 'profile_screen.dart';
 import 'tam_calculator_screen.dart';
 
 class MentorsScreen extends StatefulWidget {
@@ -68,7 +69,11 @@ class _MentorsScreenState extends State<MentorsScreen> {
   Widget build(BuildContext context) => Theme(
       data: mentorTheme(context),
       child: Scaffold(
-        appBar: const MentorHeader(),
+        appBar: MentorHeader(
+            onProfileTap: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                      builder: (_) => const ProfileScreen()),
+                )),
         bottomNavigationBar: _navigation(),
         body: SafeArea(
             child: Center(
@@ -253,7 +258,6 @@ class _MentorsScreenState extends State<MentorsScreen> {
               )),
         ))),
       ));
-
   Widget _card(Mentor mentor) => MentorSurface(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -375,10 +379,7 @@ class _MentorsScreenState extends State<MentorsScreen> {
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(40),
                   border: Border.all(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: .05))),
+                      color: Theme.of(context).colorScheme.outlineVariant)),
               child: Row(children: [
                 _navItem(
                     Icons.rocket_launch_outlined,
@@ -387,8 +388,13 @@ class _MentorsScreenState extends State<MentorsScreen> {
                         builder: (_) => const TamCalculatorScreen()))),
                 _navItem(Icons.bar_chart, 'Métricas', _showMetrics),
                 _navItem(Icons.groups_outlined, 'Mentores', null, active: true),
-                _navItem(Icons.account_circle_outlined, 'Perfil',
-                    () => Navigator.of(context).popUntil((r) => r.isFirst)),
+                _navItem(
+                    Icons.account_circle_outlined,
+                    'Perfil',
+                    () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                              builder: (_) => const ProfileScreen()),
+                        )),
               ]),
             ),
           )));
@@ -429,7 +435,6 @@ class _MentorsScreenState extends State<MentorsScreen> {
                   ],
                 ],
               ))));
-
   Widget _navItem(IconData icon, String label, VoidCallback? onTap,
           {bool active = false}) =>
       Expanded(

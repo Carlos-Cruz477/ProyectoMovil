@@ -5,6 +5,7 @@ import '../models/account.dart';
 import '../providers/account_provider.dart';
 import '../widgets/account_detail.dart';
 import 'mentors_screen.dart';
+import 'profile_screen.dart';
 import 'tam_calculator_screen.dart';
 
 TextStyle _sectionTitle(BuildContext context) => TextStyle(
@@ -157,15 +158,23 @@ class HomePage extends StatelessWidget {
         actions: [
           Padding(
               padding: const EdgeInsets.only(right: 24),
-              child: IconButton.filledTonal(
-                tooltip: 'Ver mi cuenta',
-                style: IconButton.styleFrom(
-                    backgroundColor:
-                        Theme.of(context).colorScheme.secondaryContainer,
-                    foregroundColor: Theme.of(context).colorScheme.primary),
-                onPressed: () => _openAccount(context, account),
-                icon: const Icon(Icons.person_outline_rounded),
-              ))
+              child: PopupMenuButton<String>(
+                tooltip: 'Cuenta y perfil',
+                icon: Icon(Icons.person_outline_rounded,
+                    color: Theme.of(context).colorScheme.primary),
+                onSelected: (value) {
+                  if (value == 'account') {
+                    _openAccount(context, account);
+                  } else {
+                    Navigator.of(context).push(MaterialPageRoute<void>(
+                        builder: (_) => const ProfileScreen()));
+                  }
+                },
+                itemBuilder: (context) => const [
+                  PopupMenuItem(value: 'account', child: Text('Mi cuenta')),
+                  PopupMenuItem(value: 'profile', child: Text('Perfil')),
+                ],
+              )),
         ],
       ),
       body: SafeArea(
