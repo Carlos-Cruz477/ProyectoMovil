@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../main.dart';
 
 class AccountDetail extends StatelessWidget {
   const AccountDetail({
@@ -20,23 +19,32 @@ class AccountDetail extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 40, height: 40,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
-            color: const Color(0xFFF0F6F1),
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: forest, size: 20),
+          child: Icon(icon,
+              color: Theme.of(context).colorScheme.primary, size: 20),
         ),
         const SizedBox(width: 14),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(label, style: const TextStyle(color: muted, fontSize: 12)),
+              Text(label,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 12)),
               const SizedBox(height: 4),
-              Text(value, style: TextStyle(
-                color: valueColor ?? ink, fontWeight: FontWeight.w700, fontSize: 14,
-              )),
+              Text(value,
+                  style: TextStyle(
+                    color:
+                        valueColor ?? Theme.of(context).colorScheme.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  )),
             ],
           ),
         ),

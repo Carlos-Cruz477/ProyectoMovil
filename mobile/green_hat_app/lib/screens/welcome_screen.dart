@@ -60,9 +60,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void _message(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(message,
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onErrorContainer)),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: const Color(0xFF8F3636),
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
       ),
     );
   }
@@ -133,12 +135,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (busy) ...[
-                          const SizedBox(
+                          SizedBox(
                             width: 18,
                             height: 18,
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.white,
+                              color: colors.onPrimary,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -330,7 +332,7 @@ class _StageTile extends StatelessWidget {
         color: selected ? colors.primaryContainer : colors.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: selected ? colors.primary : const Color(0xFFE4EBE5),
+          color: selected ? colors.primary : colors.outlineVariant,
         ),
       ),
       child: InkWell(
