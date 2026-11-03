@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import 'tam_report_screen.dart';
 
 class TamCalculatorScreen extends StatefulWidget {
@@ -65,10 +64,12 @@ class _TamCalculatorScreenState extends State<TamCalculatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: paper,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
-        title: const Text('Calculadora TAM',
-            style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
+        title: Text('Calculadora TAM',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.w900)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -76,9 +77,12 @@ class _TamCalculatorScreenState extends State<TamCalculatorScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'Elige una opción por sección para estimar el tamaño de tu mercado.',
-                style: TextStyle(color: muted, fontSize: 15, height: 1.5),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    fontSize: 15,
+                    height: 1.5),
               ),
               const SizedBox(height: 20),
               _Section(
@@ -112,9 +116,11 @@ class _TamCalculatorScreenState extends State<TamCalculatorScreen> {
               ),
               const SizedBox(height: 10),
               if (!_isComplete)
-                const Center(
+                Center(
                   child: Text('Completa las 4 secciones para calcular.',
-                      style: TextStyle(color: muted, fontSize: 12)),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                          fontSize: 12)),
                 ),
             ],
           ),
@@ -144,16 +150,18 @@ class _Section extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE4EBE5)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style: const TextStyle(
-                  color: ink, fontWeight: FontWeight.w800, fontSize: 15)),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 15)),
           const SizedBox(height: 12),
           Wrap(
             spacing: 8,
@@ -163,7 +171,8 @@ class _Section extends StatelessWidget {
                 ChoiceChip(
                   label: Text(option),
                   selected: selected == option,
-                  selectedColor: mint,
+                  selectedColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
                   onSelected: (_) => onSelected(option),
                 ),
             ],

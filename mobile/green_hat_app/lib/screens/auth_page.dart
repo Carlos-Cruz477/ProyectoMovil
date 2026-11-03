@@ -20,8 +20,9 @@ class _AuthPageState extends State<AuthPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Green Hat',
-            style: Theme.of(context).textTheme.headlineLarge),
-        backgroundColor: const Color(0xFF1D6254),
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onPrimaryContainer)),
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       ),
       body: SafeArea(
         child: Center(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../main.dart';
 import 'mentors_screen.dart';
 
 class TamReportScreen extends StatefulWidget {
@@ -24,10 +23,12 @@ class _TamReportScreenState extends State<TamReportScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: paper,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
-        title: const Text('Reporte TAM SAM SOM',
-            style: TextStyle(color: ink, fontWeight: FontWeight.w900)),
+        title: Text('Reporte TAM SAM SOM',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onSurface,
+                fontWeight: FontWeight.w900)),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -36,10 +37,14 @@ class _TamReportScreenState extends State<TamReportScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('${widget.sector} · ${widget.market}',
-                  style: const TextStyle(color: muted, fontSize: 15)),
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 15)),
               const SizedBox(height: 4),
-              const Text('Estimación para el año 1-2',
-                  style: TextStyle(color: muted, fontSize: 13)),
+              Text('Estimación para el año 1-2',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontSize: 13)),
               const SizedBox(height: 20),
               // Valores de mockup, el cálculo real todavía no está hecho
               const _MarketCard(
@@ -66,34 +71,48 @@ class _TamReportScreenState extends State<TamReportScreen> {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: const Color(0xFFE4EBE5)),
+                  border: Border.all(
+                      color: Theme.of(context).colorScheme.outlineVariant),
                 ),
-                child: SwitchListTile(
-                  contentPadding: EdgeInsets.zero,
-                  value: _shareWithMentors,
-                  activeTrackColor: forest,
-                  onChanged: (value) =>
-                      setState(() => _shareWithMentors = value),
-                  title: const Text('Compartir con mentores o inversionistas',
-                      style: TextStyle(
-                          color: ink,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14)),
-                  subtitle: const Text('Valores de ejemplo; autoriza el envío al elegir un mentor',
-                      style: TextStyle(color: muted, fontSize: 12)),
-                ),
+                child: Material(
+                    color: Colors.transparent,
+                    child: SwitchListTile(
+                      contentPadding: EdgeInsets.zero,
+                      value: _shareWithMentors,
+                      activeTrackColor: Theme.of(context).colorScheme.primary,
+                      onChanged: (value) =>
+                          setState(() => _shareWithMentors = value),
+                      title: Text('Compartir con mentores o inversionistas',
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.onSurface,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14)),
+                      subtitle: Text(
+                          'Valores de ejemplo; autoriza el envío al elegir un mentor',
+                          style: TextStyle(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              fontSize: 12)),
+                    )),
               ),
               const SizedBox(height: 22),
               FilledButton(
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute<void>(
-                    builder: (_) => MentorsScreen(report: _shareWithMentors ? {
-                      'sector': widget.sector, 'market': widget.market,
-                      'tam': 1400000000, 'sam': 180000000, 'som': 16500000,
-                      'isEstimateDemo': true,
-                    } : null),
+                    builder: (_) => MentorsScreen(
+                        report: _shareWithMentors
+                            ? {
+                                'sector': widget.sector,
+                                'market': widget.market,
+                                'tam': 1400000000,
+                                'sam': 180000000,
+                                'som': 16500000,
+                                'isEstimateDemo': true,
+                              }
+                            : null),
                   ));
                 },
                 child: const Text('Conectar con mentores o inversionistas'),
@@ -128,10 +147,14 @@ class _MarketCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: highlighted ? mint : Colors.white,
+        color: highlighted
+            ? Theme.of(context).colorScheme.secondaryContainer
+            : Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border:
-            Border.all(color: highlighted ? forest : const Color(0xFFE4EBE5)),
+        border: Border.all(
+            color: highlighted
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.outlineVariant),
       ),
       child: Row(
         children: [
@@ -140,12 +163,16 @@ class _MarketCard extends StatelessWidget {
             height: 40,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: highlighted ? forest : const Color(0xFFF0F6F1),
+              color: highlighted
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(number,
                 style: TextStyle(
-                    color: highlighted ? Colors.white : forest,
+                    color: highlighted
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.w800)),
           ),
           const SizedBox(width: 14),
@@ -154,18 +181,24 @@ class _MarketCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title,
-                    style: const TextStyle(
-                        color: ink, fontWeight: FontWeight.w700, fontSize: 14)),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14)),
                 const SizedBox(height: 4),
                 Text(description,
-                    style: const TextStyle(color: muted, fontSize: 12)),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12)),
               ],
             ),
           ),
           const SizedBox(width: 10),
           Text(value,
-              style: const TextStyle(
-                  color: ink, fontWeight: FontWeight.w900, fontSize: 18)),
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurface,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 18)),
         ],
       ),
     );

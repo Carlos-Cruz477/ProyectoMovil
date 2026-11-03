@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
 import '../providers/account_provider.dart';
 import '../services/api_service.dart';
 
@@ -68,9 +67,11 @@ class _SignupScreenState extends State<SignupScreen> {
   void _message(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text(message),
+          content: Text(message,
+              style: TextStyle(
+                  color: Theme.of(context).colorScheme.onErrorContainer)),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: const Color(0xFF8F3636)),
+          backgroundColor: Theme.of(context).colorScheme.errorContainer),
     );
   }
 
@@ -95,9 +96,9 @@ class _SignupScreenState extends State<SignupScreen> {
     return Container(
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: const Color(0xFFE8EEE9)),
+        border: Border.all(color: Theme.of(context).colorScheme.outlineVariant),
         boxShadow: const [
           BoxShadow(
               color: Color(0x0D163E31), blurRadius: 35, offset: Offset(0, 15)),
@@ -113,16 +114,16 @@ class _SignupScreenState extends State<SignupScreen> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F4F1),
+              color: Theme.of(context).colorScheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Wrap(children: [
               const Text('¿Ya tienes cuenta? '),
               GestureDetector(
                 onTap: widget.onLoginTap,
-                child: const Text('Iniciar sesión',
+                child: Text('Iniciar sesión',
                     style: TextStyle(
-                        color: forest,
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w800,
                         decoration: TextDecoration.underline)),
               ),
@@ -231,11 +232,12 @@ class _SignupScreenState extends State<SignupScreen> {
               FilledButton(
                 onPressed: busy ? null : _submit,
                 child: busy
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 22,
                         width: 22,
                         child: CircularProgressIndicator(
-                            strokeWidth: 2, color: Colors.white))
+                            strokeWidth: 2,
+                            color: Theme.of(context).colorScheme.surface))
                     : const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
