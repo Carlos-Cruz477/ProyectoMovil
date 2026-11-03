@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:green_hat_business/contracts/remote_data_source.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/account.dart';
@@ -17,7 +18,7 @@ class ApiException implements Exception {
   String toString() => message;
 }
 
-class ApiService {
+class ApiService implements RemoteDataDource {
   ApiService({http.Client? client, FlutterSecureStorage? storage})
       : _client = client ?? http.Client(),
         _storage = storage ?? const FlutterSecureStorage();
@@ -32,26 +33,40 @@ class ApiService {
   final FlutterSecureStorage _storage;
   static const _tokenKey = 'green-hat_access_token';
 
-  Future<List<Mentor>> getMentors({String query = '', String category = 'Todos'}) async {
-    final params = Uri(queryParameters: {'q': query, 'category': category}).query;
+  @override
+  Future<List<Mentor>> getMentors(
+      {String query = '', String category = 'Todos'}) async {
+    final params =
+        Uri(queryParameters: {'q': query, 'category': category}).query;
     final data = await _request('GET', '/mentors?$params');
     return (data['mentors'] as List)
-        .map((item) => Mentor.fromJson(item as Map<String, dynamic>)).toList();
+        .map((item) => Mentor.fromJson(item as Map<String, dynamic>))
+        .toList();
   }
 
+  @override
   Future<Mentor> getMentor(String id) async {
     final data = await _request('GET', '/mentors/${Uri.encodeComponent(id)}');
     return Mentor.fromJson(data['mentor'] as Map<String, dynamic>);
   }
 
-  Future<void> requestMentor({required String mentorId, required String type,
-    required String message, required bool shareReport, Map<String, dynamic>? report}) async {
-    await _request('POST', '/mentors/${Uri.encodeComponent(mentorId)}/requests', body: {
-      'type': type, 'message': message, 'shareReport': shareReport,
-      if (shareReport && report != null) 'report': report,
-    });
+  @override
+  Future<void> requestMentor(
+      {required String mentorId,
+      required String type,
+      required String message,
+      required bool shareReport,
+      Map<String, dynamic>? report}) async {
+    await _request('POST', '/mentors/${Uri.encodeComponent(mentorId)}/requests',
+        body: {
+          'type': type,
+          'message': message,
+          'shareReport': shareReport,
+          if (shareReport && report != null) 'report': report,
+        });
   }
 
+  @override
   Future<Account> signUp({
     required String name,
     required String email,
@@ -72,6 +87,7 @@ class ApiService {
     return Account.fromJson(data['user'] as Map<String, dynamic>);
   }
 
+  @override
   Future<Account> logIn({
     required String email,
     required String password,
@@ -85,6 +101,7 @@ class ApiService {
     return Account.fromJson(data['user'] as Map<String, dynamic>);
   }
 
+  @override
   Future<Account> saveProjectStage(String projectStage) async {
     final data = await _request(
       'PUT',
@@ -94,8 +111,7 @@ class ApiService {
     return Account.fromJson(data['user'] as Map<String, dynamic>);
   }
 
-  
-
+  @override
   Future<Account?> restoreSession() async {
     final token = await _storage.read(key: _tokenKey);
     if (token == null || token.isEmpty) return null;
@@ -109,6 +125,7 @@ class ApiService {
     }
   }
 
+  @override
   Future<void> logOut() => _storage.delete(key: _tokenKey);
 
   Future<void> _saveToken(String token) =>
@@ -179,5 +196,6 @@ class ApiService {
     }
   }
 
+  @override
   void dispose() => _client.close();
 }
